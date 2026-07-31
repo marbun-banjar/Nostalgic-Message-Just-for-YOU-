@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Surat Interaktif Retro 8-Bit</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Latar Belakang Hati Statis -->
+    <div id="heart-container"></div>
+
+    <!-- WRAPPER UTAMA -->
+    <div class="app-container">
+
+        <!-- SCENE 1: KOTAK HELLO WORLD -->
+        <main id="scene-1" class="scene active">
+            <div class="pixel-box">
+                <h1>Hello World ❤️</h1>
+                <button id="btn-to-scene2" class="btn-next">NEXT</button>
+            </div>
+        </main>
+
+        <!-- SCENE 2 & 3: AMPLOP & KERTAS SURAT -->
+        <main id="scene-2" class="scene hidden">
+            <p class="audio-note-top">true Story 🎵...</p>
+            
+            <div class="envelope-wrapper">
+                <div id="envelope" class="envelope">
+                    <!-- Flap / Lipatan Atas -->
+                    <div class="flap"></div>
+                    
+                    <!-- TUMPUKAN KERTAS (LETTER STACK) -->
+                    <div id="letter-container" class="letter-container">
+                        
+                        <!-- KERTAS 1 (Halaman 1 - Paling Depan Awal) -->
+                        <div class="paper paper-page active-paper" data-page="1">
+                            <div class="letter-content">
+                                <h3>Halo! ❤️</h3>
+                                <p>
+                                    Tulis pesan manismu di sini, Marbun! Kamu bisa mengetikkan cerita atau kata-kata indah yang ingin disampaikan.
+                                </p>
+                                <p>
+                                    Layout kertas ini dirancang otomatis menyesuaikan panjang teksmu dengan style 8-bit retro!
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- KERTAS 2 (Halaman 2) -->
+                        <div class="paper paper-page" data-page="2">
+                            <div class="letter-content">
+                                <h3>Halaman 2 📜</h3>
+                                <p>
+                                    Ini adalah halaman kedua dari tumpukan suratmu, Marbun!
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- KERTAS 3 (Halaman 3) -->
+                        <div class="paper paper-page" data-page="3">
+                            <div class="letter-content">
+                                <h3>Halaman 3 ❤️</h3>
+                                <p>Ini pesan di lembar ketiga. Kamu bisa menambah lembar sesuai keinginan!</p>
+                            </div>
+                        </div>
+
+                        <!-- KERTAS 4 (Album 1: Romansa DAHULU) -->
+                        <div class="paper paper-page" data-page="4">
+                            <div class="letter-content">
+                                <h3>Memory Lane #1 💌</h3>
+                                <p class="album-subtitle">Kisah lama yang pernah tersimpan</p>
+                                
+                                <div class="photo-gallery-grid custom-scrollbar">
+                                    <div class="photo-card span-2">
+                                        <img src="foto-dahulu-main.jpg" alt="Kenangan Utama">
+                                        <span>Kita Dulu ❤️</span>
+                                    </div>
+                                    <div class="photo-card">
+                                        <img src="foto-dahulu-1.jpg" alt="Kenangan 1">
+                                        <span>Jalan Bareng</span>
+                                    </div>
+                                    <div class="photo-card">
+                                        <img src="foto-dahulu-2.jpg" alt="Kenangan 2">
+                                        <span>Ketawa Bareng</span>
+                                    </div>
+                                    <div class="photo-card">
+                                        <img src="foto-dahulu-3.jpg" alt="Kenangan 3">
+                                        <span>Konyol</span>
+                                    </div>
+                                    <div class="photo-card">
+                                        <img src="foto-dahulu-4.jpg" alt="Kenangan 4">
+                                        <span>Tersenyum</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- KERTAS 5 (Album 2: Masa Prime SMA) -->
+                        <div class="paper paper-page" data-page="5">
+                            <div class="letter-content">
+                                <h3>High School Era #2 🎓</h3>
+                                <p class="album-subtitle">Masa-masa pilihan & momen berharga</p>
+                                
+                                <div class="photo-gallery-grid custom-scrollbar">
+                                    <div class="photo-card">
+                                        <img src="foto-presentasi.jpg" alt="Presentasi">
+                                        <span>Presentasi</span>
+                                    </div>
+                                    <div class="photo-card">
+                                        <img src="foto-tampil.jpg" alt="Tampil">
+                                        <span>Di Panggung</span>
+                                    </div>
+                                    <div class="photo-card">
+                                        <img src="foto-bicara.jpg" alt="Berbicara">
+                                        <span>Public Speaking</span>
+                                    </div>
+                                    <div class="photo-card">
+                                        <img src="foto-kelas.jpg" alt="Suasana Kelas">
+                                        <span>Di Kelas</span>
+                                    </div>
+                                    <div class="photo-card span-2">
+                                        <img src="foto-bersama.jpg" alt="Momen Terbaik">
+                                        <span>Moments ✨</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Kantong Depan Amplop -->
+                    <div class="pocket"></div>
+                    
+                    <!-- Segel Merah -->
+                    <button id="btn-open-envelope" class="heart-seal" title="Klik untuk membuka"></button>
+
+                    <!-- ELEMEN PANAH RETRO MELENGKUNG -->
+                    <svg id="pointer-arrow" class="pointer-arrow" viewBox="0 0 100 100">
+                        <path d="M 85 85 Q 90 35, 20 25" fill="none" stroke="#d61f4b" stroke-width="5" stroke-linecap="round" />
+                        <path d="M 20 25 L 35 18 M 20 25 L 32 35" fill="none" stroke="#d61f4b" stroke-width="5" stroke-linecap="round" />
+                    </svg>
+                </div>
+                
+                <p id="envelope-text-hint" class="envelope-text">Would you open?</p>
+            </div>
+
+            <!-- WADAH NAVIGASI UTAMA (DITARUH DI LUAR AMPLOP & DIBAWAH) -->
+            <div id="paper-nav-controls" class="paper-nav-controls hidden">
+                <button id="btn-prev-paper" class="nav-arrow nav-prev" title="Halaman Sebelumnya">&lt;</button>
+                <span id="page-indicator" class="page-indicator">1 / 5</span>
+                <button id="btn-next-paper" class="nav-arrow nav-next" title="Halaman Selanjutnya">&gt;</button>
+            </div>
+
+            <p class="audio-note-bottom">NB: Volume UP!</p>
+        </main>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

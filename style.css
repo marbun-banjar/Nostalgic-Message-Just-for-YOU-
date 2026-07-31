@@ -1,0 +1,532 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #ff8da1;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    overflow: hidden;
+    font-family: 'Press Start 2P', cursive;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Bingkai Retro Outer Border */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 12px solid #000000;
+    outline: 8px solid #ffffff;
+    outline-offset: -20px;
+    background-image: 
+        linear-gradient(45deg, #ff4370 25%, transparent 25%), 
+        linear-gradient(-45deg, #ff4370 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #ff4370 75%), 
+        linear-gradient(-45deg, transparent 75%, #ff4370 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    -webkit-mask-image: radial-gradient(circle, transparent 55%, black 85%);
+    mask-image: radial-gradient(circle, transparent 55%, black 85%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Container Utama */
+.app-container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 480px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+/* Manajemen Scene */
+.scene {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.scene.hidden {
+    display: none !important;
+    opacity: 0;
+}
+
+.scene.active {
+    display: flex !important;
+    opacity: 1;
+}
+
+/* Scene 1: Box */
+.pixel-box {
+    background-color: #ffffff;
+    padding: 30px 20px;
+    border: 6px solid #000000;
+    box-shadow: 8px 8px 0px #000000;
+    text-align: center;
+    max-width: 90%;
+}
+
+h1 {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #ff4370;
+    text-shadow: 3px 3px 0px #000000;
+    margin-bottom: 25px;
+}
+
+.btn-next {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
+    padding: 12px 30px;
+    background-color: #ff4370;
+    color: #ffffff;
+    border: 4px solid #000000;
+    cursor: pointer;
+    box-shadow: 5px 5px 0px #000000;
+    text-shadow: 2px 2px 0px #000000;
+    transition: all 0.1s ease;
+}
+
+.btn-next:hover {
+    background-color: #ffffff;
+    color: #ff4370;
+    text-shadow: none;
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0px #000000;
+}
+
+.btn-next:active {
+    transform: translate(3px, 3px);
+    box-shadow: 2px 2px 0px #000000;
+}
+
+/* Scene 2 & 3: Amplop & Surat */
+.audio-note-top {
+    font-size: 11px;
+    color: #000000;
+    margin-bottom: 12px;
+    text-shadow: 1px 1px 0px #ffffff;
+}
+
+.audio-note-bottom {
+    font-size: 9px;
+    color: #ff2a5f;
+    margin-top: 15px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0px #ffffff;
+}
+
+.envelope-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    margin-bottom: 20px; /* Jarak dasar ke elemen navigasi di bawahnya */
+}
+
+.envelope-text {
+    font-size: 11px;
+    color: #000000;
+    margin-top: 12px;
+    text-shadow: 1px 1px 0px #ffffff;
+    transition: opacity 0.3s ease;
+}
+
+/* Body Amplop */
+.envelope {
+    position: relative;
+    width: 240px;
+    height: 150px;
+    background-color: #ffffff;
+    border: 5px solid #000000;
+    box-shadow: 6px 6px 0px #000000;
+    overflow: visible;
+    perspective: 800px;
+}
+
+.envelope .flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 115px solid transparent;
+    border-right: 115px solid transparent;
+    border-top: 75px solid #ff7597;
+    z-index: 5;
+    transform-origin: top;
+    transition: transform 0.5s ease-in-out, z-index 0.2s ease, border-top-color 0.3s ease;
+}
+
+.envelope .pocket {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 115px solid #ffffff;
+    border-right: 115px solid #ffffff;
+    border-bottom: 65px solid #ffd3de;
+    border-top: 75px solid transparent;
+    z-index: 4;
+}
+
+.heart-seal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 38px;
+    height: 38px;
+    background-color: #ff2a5f;
+    border: 3px solid #000000;
+    border-radius: 50%;
+    z-index: 6;
+    cursor: pointer;
+    box-shadow: 2px 2px 0px #000000;
+    transition: transform 0.2s;
+}
+
+.heart-seal:hover {
+    transform: translate(-50%, -50%) scale(1.15);
+}
+
+.envelope.open .flap {
+    transform: rotateX(180deg);
+    z-index: 1;
+    border-top-color: #ff527b;
+}
+
+/* Kertas Meluncur Ke Luar Amplop */
+.letter-container {
+    position: absolute;
+    bottom: -150px;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    width: 210px;
+    height: 290px;
+    z-index: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+}
+
+.envelope.paper-out .letter-container {
+    opacity: 1;
+    z-index: 10;
+    pointer-events: auto;
+    /* Menaikkan posisi Y lebih tinggi (-140px) agar bagian bawah kertas tidak membentur tombol */
+    transform: translateX(-50%) translateY(-140px) scale(1.2);
+}
+
+/* Kertas Halaman */
+.paper-page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    border: 3px solid #000000;
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.15);
+    padding: 12px;
+    overflow-y: auto;
+    overflow-x: hidden !important;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transition: transform 0.3s ease, opacity 0.3s ease, z-index 0.3s ease;
+}
+
+.paper-page.paper-active {
+    z-index: 20;
+    transform: rotate(0deg) translate(0, 0);
+    opacity: 1;
+}
+
+.paper-page.paper-behind-1 {
+    z-index: 10;
+    transform: rotate(2deg) translate(2px, 1px);
+    opacity: 0.95;
+}
+
+.paper-page.paper-behind-2 {
+    z-index: 5;
+    transform: rotate(-1.5deg) translate(-2px, 2px);
+    opacity: 0.85;
+}
+
+.letter-content {
+    font-family: 'Press Start 2P', cursive;
+    color: #000000;
+    font-size: 8px;
+    line-height: 1.6;
+}
+
+.letter-content h3 {
+    font-size: 10px;
+    color: #ff4370;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.album-subtitle {
+    font-size: 6px;
+    text-align: center;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+/* Grid Foto Galeri */
+.photo-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    max-height: 160px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.photo-card {
+    background: #ffffff;
+    border: 2px solid #000000;
+    padding: 3px;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+}
+
+.photo-card.span-2 {
+    grid-column: span 2;
+}
+
+.photo-card img {
+    width: 100%;
+    height: 58px;
+    object-fit: cover;
+    image-rendering: auto;
+    border: 1px solid #000000;
+}
+
+.photo-card span {
+    font-size: 5px;
+    margin-top: 3px;
+    color: #000000;
+    text-align: center;
+}
+
+/* NAVIGASI TOMBOL KIRI KANAN (DI BAWAH KERTAS) */
+.paper-nav-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 250px;
+    /* Margin top dinaikkan ke 60px agar pasti bebas dari jangkauan kertas saat di-scale */
+    margin-top: 60px; 
+    position: relative;
+    z-index: 100;
+    transition: opacity 0.3s ease;
+}
+
+.paper-nav-controls.hidden {
+    display: none !important;
+}
+
+.page-indicator {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    color: #000000;
+    text-shadow: 1px 1px 0px #ffffff;
+}
+
+.nav-arrow {
+    width: 38px;
+    height: 38px;
+    background-color: #ffffff;
+    border: 3px solid #000000;
+    box-shadow: 3px 3px 0px #000000;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
+    font-weight: bold;
+    color: #ff4370;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.1s, background-color 0.2s, opacity 0.2s;
+    user-select: none;
+}
+
+.nav-arrow:hover:not(:disabled) {
+    background-color: #ff4370;
+    color: #ffffff;
+}
+
+.nav-arrow:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px #000000;
+}
+
+.nav-arrow:disabled,
+.nav-arrow.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background-color: #ccc;
+}
+
+/* ANIMASI PULL & THROW KERTAS SURAT (PENUTASAN BENTROKAN TRANSITION) */
+.paper-page.anim-throw-back {
+    animation: smoothThrowToBack 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+    transition: none !important;
+}
+
+/* Priority High pada Animasi Menarik Lembar Ke Depan */
+.paper-page.anim-pull-front {
+    animation: smoothPullToFront 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+    transition: none !important;
+}
+
+
+
+@keyframes smoothThrowToBack {
+    0% {
+        transform: rotate(0deg) translate(0, 0);
+        z-index: 30;
+        opacity: 1;
+    }
+    50% {
+        transform: rotate(18deg) translate(160px, -20px);
+        z-index: 30;
+        opacity: 1;
+    }
+    51% {
+        z-index: 1;
+    }
+    100% {
+        transform: rotate(-1.5deg) translate(-2px, 2px);
+        z-index: 1;
+        opacity: 0.85;
+    }
+}
+
+@keyframes smoothPullToFront {
+    0% {
+        transform: rotate(-1.5deg) translate(-2px, 2px);
+        opacity: 1;
+    }
+    45% {
+        transform: rotate(-18deg) translate(-160px, -15px);
+        opacity: 1;
+    }
+    100% {
+        transform: rotate(0deg) translate(0, 0);
+        opacity: 1;
+    }
+}
+
+
+/* Scrollbar Custom Retro 3D */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 12px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background-color: #d4d0c8;
+    border-left: 1px solid #808080;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #d4d0c8;
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #404040;
+    border-bottom: 2px solid #404040;
+    box-shadow: inset -1px -1px 0px #808080, inset 1px 1px 0px #e0e0e0;
+}
+
+/* Background Hearts */
+#heart-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.heart-static-img {
+    position: absolute;
+    user-select: none;
+    pointer-events: none;
+    image-rendering: pixelated;
+    mix-blend-mode: overlay;
+    filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.2));
+}
+
+.pointer-arrow {
+    position: absolute;
+    right: 5px;
+    bottom: -10px;
+    width: 85px;
+    height: 85px;
+    z-index: 10;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    animation: arrowBounce 1.5s infinite ease-in-out;
+}
+
+@keyframes arrowBounce {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-4px, -5px); }
+}
+
+/* Fade Transitions */
+.fade-out { animation: fadeOut 0.4s ease forwards; }
+.fade-in { animation: fadeIn 0.4s ease forwards; }
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.85); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Media Queries untuk Layar Kecil */
+@media (max-height: 670px) {
+    .envelope.paper-out .letter-container {
+        transform: translateX(-50%) translateY(-120px) scale(1.05);
+    }
+    .paper-nav-controls {
+        margin-top: 35px;
+    }
+    .photo-gallery-grid {
+        max-height: 120px;
+    }
+}
