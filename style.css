@@ -118,14 +118,14 @@ h1 {
     box-shadow: 2px 2px 0px #000000;
 }
 
-/* --- SCENE 2 FLEXBOX LAYOUT (MEMBUAT TAMPILAN PRESISI DI TENGAH) --- */
+/* --- SCENE 2 FLEXBOX LAYOUT --- */
 #scene-2 {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     height: 100vh;
-    padding: 25px 0;
+    padding: 20px 0;
 }
 
 .audio-note-top {
@@ -136,11 +136,13 @@ h1 {
 }
 
 .audio-note-bottom {
+    display: flex;
     font-size: 9px;
     color: #ff2a5f;
     font-weight: bold;
     text-shadow: 1px 1px 0px #ffffff;
     margin-top: 5px;
+    margin-bottom: 20px;
 }
 
 .envelope-wrapper {
@@ -225,16 +227,14 @@ h1 {
     border-top-color: #ff527b;
 }
 
-/* --- KERTAS MEMANJANG KE BAWAH (ISI 100%) --- */
+/* --- KERTAS MEMANJANG KE BAWAH --- */
 .letter-container {
     position: absolute;
     bottom: -150px;
     left: 50%;
     transform: translateX(-50%) translateY(0);
-    
     width: 215px;
-    height: 430px; /* Panjang ideal mengisikan area tengah */
-    
+    height: 410px; /* Panjang ideal untuk laptop/layar sedang-besar */
     z-index: 0;
     opacity: 0;
     pointer-events: none;
@@ -249,9 +249,7 @@ h1 {
     transform: translateX(-50%) translateY(10px); 
 }
 
-/* Kertas Halaman */
-/* --- KERTAS HALAMAN (EQUAL PADDING ATAS & BAWAH) --- */
-/* --- HILANGKAN SCROLLBAR INTERNAL & BIKIN PADDING PAS --- */
+/* --- KERTAS HALAMAN (EQUAL PADDING ATAS & BAWAH + SCROLLABLE) --- */
 .paper-page {
     position: absolute;
     top: 0;
@@ -261,14 +259,32 @@ h1 {
     background-color: #ffffff;
     border: 3px solid #000000;
     box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.15);
-    padding: 14px 12px;
     
-    /* UBAH DI SINI: Matikan scrollbar sama sekali agar panah atas-bawah hilang total */
-    overflow: hidden !important; 
+    /* GAP AMAN DI ATAS DAN BAWAH */
+    padding: 16px 10px; 
+    
+    /* SCROLLBAR AKTIF DENGAN TAMPILAN CLEAN */
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
     
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     transition: transform 0.3s ease, opacity 0.3s ease, z-index 0.3s ease;
+}
+
+/* Custom Scrollbar Retro Pink Pixel Style */
+.paper-page::-webkit-scrollbar {
+    width: 5px;
+}
+
+.paper-page::-webkit-scrollbar-track {
+    background: #ffe3eb;
+    border-left: 1px solid #000000;
+}
+
+.paper-page::-webkit-scrollbar-thumb {
+    background: #ff4370;
+    border: 1px solid #000000;
 }
 
 .paper-page.paper-active {
@@ -289,43 +305,42 @@ h1 {
     opacity: 0.85;
 }
 
-/* --- ISI KERTAS AGAR MEMENUHI 100% AREA --- */
+/* --- ISI KERTAS AGAR MENGISI 100% RUANG --- */
 .letter-content {
     font-family: 'Press Start 2P', cursive;
     color: #000000;
     font-size: 8px;
     line-height: 1.6;
-    height: 100%;
     display: flex;
     flex-direction: column;
-    /* UBAH DI SINI: ganti space-between jadi flex-start */
-    justify-content: flex-start; 
-    gap: 12px; /* Memberi jarak rapi antar elemen/paragraf di atas */
+    justify-content: flex-start;
+    gap: 10px;
+    
+    /* Ekstra gap aman di paling bawah saat di-scroll penuh */
+    padding-bottom: 14px; 
 }
 
 .letter-content h3 {
-    font-size: 11px;
+    font-size: 10px;
     color: #ff4370;
-    margin-bottom: 6px;
+    margin-bottom: 2px;
     text-align: center;
 }
 
 .album-subtitle {
-    font-size: 7px;
+    font-size: 6px;
     text-align: center;
     color: #666;
-    margin-bottom: 12px;
+    margin-bottom: 6px;
 }
 
-/* --- GRID FOTO (PADDING BAWAH TAMBAHAN) --- */
-/* --- SESUAIKAN TINGGI FOTO AGAR MUAT PRESI DI DALAM KERTAS --- */
+/* --- GRID FOTO MEMANJANG DIPANJANGKAN SUPAYA FULL --- */
 .photo-gallery-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
+    gap: 8px;
     width: 100%;
     box-sizing: border-box;
-    overflow: hidden;
 }
 
 .photo-card {
@@ -340,30 +355,18 @@ h1 {
     min-width: 0;
 }
 
-.photo-card {
-    background: #ffffff;
-    border: 2px solid #000000;
-    padding: 3px;
-    box-shadow: 2px 2px 0px rgba(0,0,0,0.15);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-width: 0;
-}
-
 .photo-card.span-2 {
     grid-column: span 2;
 }
 
-/* UBAH DI SINI: Atur tinggi gambar khusus untuk layout dengan 5 foto (1 besar + 4 kecil) */
+/* UKURAN GAMBAR DIPANJANGKAN AGAR KEISI PENUH DI LAYAR LEBAR */
 .photo-card.span-2 img {
-    height: 65px; /* Foto utama paling atas */
+    height: 95px; 
 }
 
 .photo-card img {
     width: 100%;
-    height: 52px; /* Foto grid 2x2 di bawahnya */
+    height: 80px; 
     object-fit: cover;
     image-rendering: auto;
     border: 1px solid #000000;
@@ -371,12 +374,13 @@ h1 {
 
 .photo-card span {
     font-size: 5px;
-    margin-top: 2px;
+    margin-top: 4px;
     color: #000000;
     text-align: center;
-    line-height: 1.2;
+    line-height: 1.3;
 }
-/* --- NAVIGASI TOMBOL (TERKUNCI DI BAWAH) --- */
+
+/* --- NAVIGASI TOMBOL --- */
 .paper-nav-controls {
     display: flex;
     align-items: center;
@@ -446,89 +450,34 @@ h1 {
 }
 
 @keyframes smoothThrowToBack {
-    0% {
-        transform: rotate(0deg) translate(0, 0);
-        z-index: 30;
-        opacity: 1;
-    }
-    50% {
-        transform: rotate(18deg) translate(160px, -20px);
-        z-index: 30;
-        opacity: 1;
-    }
-    51% {
-        z-index: 1;
-    }
-    100% {
-        transform: rotate(-1.5deg) translate(-2px, 2px);
-        z-index: 1;
-        opacity: 0.85;
-    }
+    0% { transform: rotate(0deg) translate(0, 0); z-index: 30; opacity: 1; }
+    50% { transform: rotate(18deg) translate(160px, -20px); z-index: 30; opacity: 1; }
+    51% { z-index: 1; }
+    100% { transform: rotate(-1.5deg) translate(-2px, 2px); z-index: 1; opacity: 0.85; }
 }
 
 @keyframes smoothPullToFront {
-    0% {
-        transform: rotate(-1.5deg) translate(-2px, 2px);
-        opacity: 1;
-    }
-    45% {
-        transform: rotate(-18deg) translate(-160px, -15px);
-        opacity: 1;
-    }
-    100% {
-        transform: rotate(0deg) translate(0, 0);
-        opacity: 1;
-    }
+    0% { transform: rotate(-1.5deg) translate(-2px, 2px); opacity: 1; }
+    45% { transform: rotate(-18deg) translate(-160px, -15px); opacity: 1; }
+    100% { transform: rotate(0deg) translate(0, 0); opacity: 1; }
 }
 
-/* Scrollbar Custom Retro 3D */
-.custom-scrollbar::-webkit-scrollbar {
-    width: 12px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-    background-color: #d4d0c8;
-    border-left: 1px solid #808080;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #d4d0c8;
-    border-top: 2px solid #ffffff;
-    border-left: 2px solid #ffffff;
-    border-right: 2px solid #404040;
-    border-bottom: 2px solid #404040;
-    box-shadow: inset -1px -1px 0px #808080, inset 1px 1px 0px #e0e0e0;
-}
-
-/* Background Hearts */
+/* Background Hearts & Pointer */
 #heart-container {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: 1;
-    pointer-events: none;
+    top: 0; left: 0; width: 100%; height: 100%;
+    overflow: hidden; z-index: 1; pointer-events: none;
 }
 
 .heart-static-img {
-    position: absolute;
-    user-select: none;
-    pointer-events: none;
-    image-rendering: pixelated;
-    mix-blend-mode: overlay;
+    position: absolute; user-select: none; pointer-events: none;
+    image-rendering: pixelated; mix-blend-mode: overlay;
     filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.2));
 }
 
 .pointer-arrow {
-    position: absolute;
-    right: 5px;
-    bottom: -10px;
-    width: 85px;
-    height: 85px;
-    z-index: 10;
-    pointer-events: none;
+    position: absolute; right: 5px; bottom: -10px;
+    width: 85px; height: 85px; z-index: 10; pointer-events: none;
     transition: opacity 0.3s ease;
     animation: arrowBounce 1.5s infinite ease-in-out;
 }
@@ -552,13 +501,42 @@ h1 {
     to { opacity: 1; transform: scale(1); }
 }
 
-/* Media Queries untuk Layar Kecil */
-@media (max-height: 670px) {
-    .envelope.paper-out .letter-container {
-        transform: translateX(-50%) translateY(0px) scale(0.95);
+/* --- MEDIA QUERIES UNTUK HP / LAYAR PENDEK (RESPONSIF ALL DEVICE) --- */
+@media (max-height: 700px) {
+    #scene-2 {
+        padding: 10px 0;
     }
-    .photo-gallery-grid {
-        max-height: 120px;
+
+    .envelope {
+        width: 210px;
+        height: 130px;
+    }
+
+    .envelope .flap {
+        border-left-width: 100px;
+        border-right-width: 100px;
+        border-top-width: 65px;
+    }
+
+    .envelope .pocket {
+        border-left-width: 100px;
+        border-right-width: 100px;
+        border-bottom-width: 55px;
+        border-top-width: 65px;
+    }
+
+    /* Kertas dikecilkan sedikit agar muat di tengah antara amplop dan navigasi */
+    .letter-container {
+        width: 195px;
+        height: 320px !important;
+        bottom: -110px;
+    }
+
+    .envelope.paper-out .letter-container {
+        transform: translateX(-50%) translateY(15px) !important;
+    }
+
+    .paper-nav-controls {
+        transform: scale(0.85);
     }
 }
-
