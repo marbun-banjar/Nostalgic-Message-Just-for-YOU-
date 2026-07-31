@@ -118,20 +118,29 @@ h1 {
     box-shadow: 2px 2px 0px #000000;
 }
 
-/* Scene 2 & 3: Amplop & Surat */
+/* --- SCENE 2 FLEXBOX LAYOUT (MEMBUAT TAMPILAN PRESISI DI TENGAH) --- */
+#scene-2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100vh;
+    padding: 25px 0;
+}
+
 .audio-note-top {
     font-size: 11px;
     color: #000000;
-    margin-bottom: 12px;
     text-shadow: 1px 1px 0px #ffffff;
+    margin-bottom: 0;
 }
 
 .audio-note-bottom {
     font-size: 9px;
     color: #ff2a5f;
-    margin-top: 15px;
     font-weight: bold;
     text-shadow: 1px 1px 0px #ffffff;
+    margin-top: 5px;
 }
 
 .envelope-wrapper {
@@ -139,7 +148,8 @@ h1 {
     flex-direction: column;
     align-items: center;
     position: relative;
-    margin-bottom: 20px; /* Jarak dasar ke elemen navigasi di bawahnya */
+    margin-top: 10px;
+    margin-bottom: 0;
 }
 
 .envelope-text {
@@ -215,29 +225,33 @@ h1 {
     border-top-color: #ff527b;
 }
 
-/* Kertas Meluncur Ke Luar Amplop */
+/* --- KERTAS MEMANJANG KE BAWAH (ISI 100%) --- */
 .letter-container {
     position: absolute;
     bottom: -150px;
     left: 50%;
     transform: translateX(-50%) translateY(0);
-    width: 210px;
-    height: 290px;
+    
+    width: 215px;
+    height: 430px; /* Panjang ideal mengisikan area tengah */
+    
     z-index: 0;
     opacity: 0;
     pointer-events: none;
     transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
 }
 
+/* Posisi Kertas Saat Keluar Amplop */
 .envelope.paper-out .letter-container {
     opacity: 1;
     z-index: 10;
     pointer-events: auto;
-    /* Menaikkan posisi Y lebih tinggi (-140px) agar bagian bawah kertas tidak membentur tombol */
-    transform: translateX(-50%) translateY(-140px) scale(1.2);
+    transform: translateX(-50%) translateY(10px); 
 }
 
 /* Kertas Halaman */
+/* --- KERTAS HALAMAN (EQUAL PADDING ATAS & BAWAH) --- */
+/* --- HILANGKAN SCROLLBAR INTERNAL & BIKIN PADDING PAS --- */
 .paper-page {
     position: absolute;
     top: 0;
@@ -247,9 +261,11 @@ h1 {
     background-color: #ffffff;
     border: 3px solid #000000;
     box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.15);
-    padding: 12px;
-    overflow-y: auto;
-    overflow-x: hidden !important;
+    padding: 14px 12px;
+    
+    /* UBAH DI SINI: Matikan scrollbar sama sekali agar panah atas-bawah hilang total */
+    overflow: hidden !important; 
+    
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     transition: transform 0.3s ease, opacity 0.3s ease, z-index 0.3s ease;
@@ -273,38 +289,55 @@ h1 {
     opacity: 0.85;
 }
 
+/* --- ISI KERTAS AGAR MEMENUHI 100% AREA --- */
 .letter-content {
     font-family: 'Press Start 2P', cursive;
     color: #000000;
     font-size: 8px;
     line-height: 1.6;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    /* UBAH DI SINI: ganti space-between jadi flex-start */
+    justify-content: flex-start; 
+    gap: 12px; /* Memberi jarak rapi antar elemen/paragraf di atas */
 }
 
 .letter-content h3 {
-    font-size: 10px;
+    font-size: 11px;
     color: #ff4370;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     text-align: center;
 }
 
 .album-subtitle {
-    font-size: 6px;
+    font-size: 7px;
     text-align: center;
     color: #666;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
 }
 
-/* Grid Foto Galeri */
+/* --- GRID FOTO (PADDING BAWAH TAMBAHAN) --- */
+/* --- SESUAIKAN TINGGI FOTO AGAR MUAT PRESI DI DALAM KERTAS --- */
 .photo-gallery-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 6px;
-    max-height: 160px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 4px;
     width: 100%;
     box-sizing: border-box;
+    overflow: hidden;
+}
+
+.photo-card {
+    background: #ffffff;
+    border: 2px solid #000000;
+    padding: 4px;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
 }
 
 .photo-card {
@@ -315,6 +348,7 @@ h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     min-width: 0;
 }
 
@@ -322,9 +356,14 @@ h1 {
     grid-column: span 2;
 }
 
+/* UBAH DI SINI: Atur tinggi gambar khusus untuk layout dengan 5 foto (1 besar + 4 kecil) */
+.photo-card.span-2 img {
+    height: 65px; /* Foto utama paling atas */
+}
+
 .photo-card img {
     width: 100%;
-    height: 58px;
+    height: 52px; /* Foto grid 2x2 di bawahnya */
     object-fit: cover;
     image-rendering: auto;
     border: 1px solid #000000;
@@ -332,19 +371,18 @@ h1 {
 
 .photo-card span {
     font-size: 5px;
-    margin-top: 3px;
+    margin-top: 2px;
     color: #000000;
     text-align: center;
+    line-height: 1.2;
 }
-
-/* NAVIGASI TOMBOL KIRI KANAN (DI BAWAH KERTAS) */
+/* --- NAVIGASI TOMBOL (TERKUNCI DI BAWAH) --- */
 .paper-nav-controls {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 250px;
-    /* Margin top dinaikkan ke 60px agar pasti bebas dari jangkauan kertas saat di-scale */
-    margin-top: 60px; 
+    margin-top: 0;
     position: relative;
     z-index: 100;
     transition: opacity 0.3s ease;
@@ -396,19 +434,16 @@ h1 {
     background-color: #ccc;
 }
 
-/* ANIMASI PULL & THROW KERTAS SURAT (PENUTASAN BENTROKAN TRANSITION) */
+/* ANIMASI PULL & THROW KERTAS SURAT */
 .paper-page.anim-throw-back {
     animation: smoothThrowToBack 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
     transition: none !important;
 }
 
-/* Priority High pada Animasi Menarik Lembar Ke Depan */
 .paper-page.anim-pull-front {
     animation: smoothPullToFront 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
     transition: none !important;
 }
-
-
 
 @keyframes smoothThrowToBack {
     0% {
@@ -445,7 +480,6 @@ h1 {
         opacity: 1;
     }
 }
-
 
 /* Scrollbar Custom Retro 3D */
 .custom-scrollbar::-webkit-scrollbar {
@@ -521,12 +555,10 @@ h1 {
 /* Media Queries untuk Layar Kecil */
 @media (max-height: 670px) {
     .envelope.paper-out .letter-container {
-        transform: translateX(-50%) translateY(-120px) scale(1.05);
-    }
-    .paper-nav-controls {
-        margin-top: 35px;
+        transform: translateX(-50%) translateY(0px) scale(0.95);
     }
     .photo-gallery-grid {
         max-height: 120px;
     }
 }
+
