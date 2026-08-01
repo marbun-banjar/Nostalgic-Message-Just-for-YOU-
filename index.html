@@ -29,6 +29,7 @@
 
         <!-- SCENE 2 & 3: AMPLOP & KERTAS SURAT -->
         <main id="scene-2" class="scene hidden">
+            <!-- Judul lagu ditaruh secara absolut ke kiri atas -->
             <p class="audio-note-top">true Story 🎵...</p>
             
             <div class="envelope-wrapper">
@@ -39,7 +40,7 @@
                     <!-- TUMPUKAN KERTAS (LETTER STACK) -->
                     <div id="letter-container" class="letter-container">
                         
-                        <!-- KERTAS 1 (Halaman 1 - Paling Depan Awal) -->
+                        <!-- KERTAS 1 (Halaman 1) -->
                         <div class="paper paper-page active-paper" data-page="1">
                             <div class="letter-content">
                                 <h3>Halo! ❤️</h3>
@@ -70,7 +71,7 @@
                             </div>
                         </div>
 
-                        <!-- KERTAS 4 (Album 1: Romansa DAHULU) -->
+                        <!-- KERTAS 4 (Album 1) -->
                         <div class="paper paper-page" data-page="4">
                             <div class="letter-content">
                                 <h3>Memory Lane #1 💌</h3>
@@ -78,30 +79,30 @@
                                 
                                 <div class="photo-gallery-grid custom-scrollbar">
                                     <div class="photo-card span-2">
-                                        <img src="foto-dahulu-main.jpg" alt="Kenangan Utama">
+                                        <img src="https://i.pinimg.com/736x/4d/8a/28/4d8a289b95b8041f9ff817e99d7a82fe.jpg" alt="Kenangan Utama">
                                         <span>Kita Dulu ❤️</span>
                                     </div>
                                     <div class="photo-card">
-                                        <img src="foto-dahulu-1.jpg" alt="Kenangan 1">
+                                        <img src="https://i.pinimg.com/736x/df/33/42/df3342d189242e678d4eb151c746547e.jpg" alt="Kenangan 1">
                                         <span>Jalan Bareng</span>
                                     </div>
                                     <div class="photo-card">
-                                        <img src="foto-dahulu-2.jpg" alt="Kenangan 2">
+                                        <img src="https://i.pinimg.com/736x/f3/42/02/f3420241b905d2240a3c44f74c025d9c.jpg" alt="Kenangan 2">
                                         <span>Ketawa Bareng</span>
                                     </div>
                                     <div class="photo-card">
-                                        <img src="foto-dahulu-3.jpg" alt="Kenangan 3">
+                                        <img src="https://i.pinimg.com/736x/3a/da/57/3ada57adf75eccdc1ec01e981840fbb7.jpg" alt="Kenangan 3">
                                         <span>Konyol</span>
                                     </div>
                                     <div class="photo-card">
-                                        <img src="foto-dahulu-4.jpg" alt="Kenangan 4">
+                                        <img src="https://i.pinimg.com/736x/78/e3/49/78e34990fdae224049ca7a76e55c1efa.jpg" alt="Kenangan 4">
                                         <span>Tersenyum</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- KERTAS 5 (Album 2: Masa Prime SMA) -->
+                        <!-- KERTAS 5 (Album 2) -->
                         <div class="paper paper-page" data-page="5">
                             <div class="letter-content">
                                 <h3>High School Era #2 🎓</h3>
@@ -109,23 +110,23 @@
                                 
                                 <div class="photo-gallery-grid custom-scrollbar">
                                     <div class="photo-card">
-                                        <img src="foto-presentasi.jpg" alt="Presentasi">
+                                        <img src="https://i.pinimg.com/736x/b3/a0/8d/b3a08d416d4c7613908d7f5fe10c0b5c.jpg" alt="Presentasi">
                                         <span>Presentasi</span>
                                     </div>
                                     <div class="photo-card">
-                                        <img src="foto-tampil.jpg" alt="Tampil">
+                                        <img src="https://i.pinimg.com/736x/1e/7c/13/1e7c134955be6d505964583b3cad77e4.jpg" alt="Tampil">
                                         <span>Di Panggung</span>
                                     </div>
                                     <div class="photo-card">
-                                        <img src="foto-bicara.jpg" alt="Berbicara">
+                                        <img src="https://i.pinimg.com/736x/07/55/02/075502ff56721d6813bfaf7dc2a91f4a.jpg" alt="Berbicara">
                                         <span>Public Speaking</span>
                                     </div>
                                     <div class="photo-card">
-                                        <img src="foto-kelas.jpg" alt="Suasana Kelas">
+                                        <img src="https://i.pinimg.com/736x/e9/f7/2d/e9f72d896e84fcbd9079ae9179b88c6e.jpg" alt="Suasana Kelas">
                                         <span>Di Kelas</span>
                                     </div>
                                     <div class="photo-card span-2">
-                                        <img src="foto-bersama.jpg" alt="Momen Terbaik">
+                                        <img src="https://i.pinimg.com/736x/47/9c/45/479c45946aaf61e40952945b8399720d.jpg" alt="Momen Terbaik">
                                         <span>Moments ✨</span>
                                     </div>
                                 </div>
@@ -150,14 +151,17 @@
                 <p id="envelope-text-hint" class="envelope-text">Would you open?</p>
             </div>
 
-            <!-- WADAH NAVIGASI UTAMA (DITARUH DI LUAR AMPLOP & DIBAWAH) -->
-            <div id="paper-nav-controls" class="paper-nav-controls hidden">
-                <button id="btn-prev-paper" class="nav-arrow nav-prev" title="Halaman Sebelumnya">&lt;</button>
-                <span id="page-indicator" class="page-indicator">1 / 5</span>
-                <button id="btn-next-paper" class="nav-arrow nav-next" title="Halaman Selanjutnya">&gt;</button>
-            </div>
+            <!-- DIBUNGKUS WADAH BAWAH UNTUK NAVIGASI DAN TULISAN NB -->
+            <div class="bottom-controls-wrapper">
+                <div id="paper-nav-controls" class="paper-nav-controls hidden">
+                    <button id="btn-prev-paper" class="nav-arrow nav-prev" title="Halaman Sebelumnya">&lt;</button>
+                    <span id="page-indicator" class="page-indicator">1 / 5</span>
+                    <button id="btn-next-paper" class="nav-arrow nav-next" title="Halaman Selanjutnya">&gt;</button>
+                </div>
 
-            <p class="audio-note-bottom">NB: Volume UP!</p>
+                <!-- Tulisan NB sekarang ditaruh tepat di bawah indikator/navigasi -->
+                <p class="audio-note-bottom">NB: Volume UP!</p>
+            </div>
         </main>
 
     </div>
