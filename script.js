@@ -1,161 +1,531 @@
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // --- 1. BACKGROUND HATI PIXEL ---
-    const heartContainer = document.getElementById('heart-container');
-    const TOTAL_HEARTS = 25;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    function createStaticPixelHearts() {
-        if (!heartContainer) return;
-        heartContainer.innerHTML = '';
+:root {
+    --app-max-width: 420px;
+}
 
-        for (let i = 0; i < TOTAL_HEARTS; i++) {
-            const heartImg = document.createElement('img');
-            heartImg.src = 'pixel-heart.png';
-            heartImg.classList.add('heart-static-img');
-            
-            heartImg.style.left = Math.random() * 92 + 'vw';
-            heartImg.style.top = Math.random() * 92 + 'vh';
-            
-            const size = Math.random() * 20 + 20; 
-            heartImg.style.width = size + 'px';
-            heartImg.style.height = 'auto';
-            heartImg.style.opacity = (Math.random() * 0.15 + 0.1).toFixed(2);
-            
-            const rotation = Math.floor(Math.random() * 40) - 20;
-            heartImg.style.transform = `rotate(${rotation}deg)`;
-            
-            heartContainer.appendChild(heartImg);
-        }
+html, body {
+    width: 100%;
+    height: 100%;
+    background-color: #ff8da1;
+    font-family: 'Press Start 2P', cursive;
+    overflow: hidden;
+    position: relative;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Bingkai Retro Outer Border - Dibuat tidak menutupi tombol/navigasi */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 10px solid #000000;
+    outline: 6px solid #ffffff;
+    outline-offset: -16px;
+    background-image: 
+        linear-gradient(45deg, #ff4370 25%, transparent 25%), 
+        linear-gradient(-45deg, #ff4370 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #ff4370 75%), 
+        linear-gradient(-45deg, transparent 75%, #ff4370 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    -webkit-mask-image: radial-gradient(circle, transparent 50%, black 85%);
+    mask-image: radial-gradient(circle, transparent 50%, black 85%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Container Utama */
+.app-container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: var(--app-max-width);
+    height: 100%;
+    max-height: 840px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+
+/* Manajemen Scene */
+.scene {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.scene.hidden {
+    display: none !important;
+    opacity: 0;
+}
+
+.scene.active {
+    display: flex !important;
+    opacity: 1;
+}
+
+/* Scene 1: Box */
+.pixel-box {
+    background-color: #ffffff;
+    padding: 30px 20px;
+    border: 6px solid #000000;
+    box-shadow: 8px 8px 0px #000000;
+    text-align: center;
+    max-width: 90%;
+}
+
+h1 {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #ff4370;
+    text-shadow: 3px 3px 0px #000000;
+    margin-bottom: 25px;
+}
+
+.btn-next {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
+    padding: 12px 30px;
+    background-color: #ff4370;
+    color: #ffffff;
+    border: 4px solid #000000;
+    cursor: pointer;
+    box-shadow: 5px 5px 0px #000000;
+    text-shadow: 2px 2px 0px #000000;
+    transition: all 0.1s ease;
+}
+
+.btn-next:hover {
+    background-color: #ffffff;
+    color: #ff4370;
+    text-shadow: none;
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0px #000000;
+}
+
+.btn-next:active {
+    transform: translate(3px, 3px);
+    box-shadow: 2px 2px 0px #000000;
+}
+
+/* --- SCENE 2 LAYOUT --- */
+#scene-2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 25px;
+}
+
+/* --- JUDUL LAGU (KIRI ATAS LAYAR) --- */
+.audio-note-top {
+    position: absolute;
+    top: 25px;
+    left: 20px;
+    font-size: 9px;
+    color: #000000;
+    text-shadow: 1px 1px 0px #ffffff;
+    z-index: 50;
+    pointer-events: none;
+}
+
+/* --- WADAH KONTROL BAWAH --- */
+.bottom-controls-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 100;
+    margin-top: 15px;
+}
+
+.audio-note-bottom {
+    display: block;
+    font-size: 9px;
+    color: #ff2a5f;
+    font-weight: bold;
+    text-shadow: 1px 1px 0px #ffffff;
+    text-align: center;
+    margin: 0;
+}
+
+/* AMPLOP WRAPPER */
+.envelope-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.envelope-text {
+    font-size: 11px;
+    color: #000000;
+    margin-top: 12px;
+    text-shadow: 1px 1px 0px #ffffff;
+    transition: opacity 0.3s ease;
+}
+
+/* Body Amplop */
+.envelope {
+    position: relative;
+    width: 240px;
+    height: 150px;
+    background-color: #ffffff;
+    border: 5px solid #000000;
+    box-shadow: 6px 6px 0px #000000;
+    overflow: visible;
+}
+
+.envelope .flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 115px solid transparent;
+    border-right: 115px solid transparent;
+    border-top: 75px solid #ff7597;
+    z-index: 5;
+    transform-origin: top;
+    transition: transform 0.5s ease-in-out, z-index 0.2s ease, border-top-color 0.3s ease;
+}
+
+.envelope .pocket {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 115px solid #ffffff;
+    border-right: 115px solid #ffffff;
+    border-bottom: 65px solid #ffd3de;
+    border-top: 75px solid transparent;
+    z-index: 4;
+}
+
+.heart-seal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 38px;
+    height: 38px;
+    background-color: #ff2a5f;
+    border: 3px solid #000000;
+    border-radius: 50%;
+    z-index: 6;
+    cursor: pointer;
+    box-shadow: 2px 2px 0px #000000;
+    transition: transform 0.2s;
+}
+
+.heart-seal:hover {
+    transform: translate(-50%, -50%) scale(1.15);
+}
+
+.envelope.open .flap {
+    transform: rotateX(180deg);
+    z-index: 1;
+    border-top-color: #ff527b;
+}
+
+/* --- KERTAS MEMANJANG KE ATAS --- */
+.letter-container {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    width: 220px;
+    height: 290px;
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+}
+
+/* Posisi Kertas Saat Keluar Amplop */
+.envelope.paper-out .letter-container {
+    opacity: 1;
+    z-index: 20;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(-135px); 
+}
+
+/* --- KERTAS HALAMAN --- */
+.paper-page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    border: 3px solid #000000;
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.15);
+    padding: 12px 10px; 
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Custom Scrollbar Retro Pink Pixel Style */
+.paper-page::-webkit-scrollbar {
+    width: 5px;
+}
+
+.paper-page::-webkit-scrollbar-track {
+    background: #ffe3eb;
+    border-left: 1px solid #000000;
+}
+
+.paper-page::-webkit-scrollbar-thumb {
+    background: #ff4370;
+    border: 1px solid #000000;
+}
+
+.paper-page.paper-active {
+    z-index: 30;
+    transform: rotate(0deg) translate(0, 0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.paper-page.paper-behind-1 {
+    z-index: 20;
+    transform: rotate(2deg) translate(3px, 3px);
+    opacity: 0.95;
+    pointer-events: none;
+}
+
+.paper-page.paper-behind-2 {
+    z-index: 10;
+    transform: rotate(-2deg) translate(-3px, 5px);
+    opacity: 0.85;
+    pointer-events: none;
+}
+
+/* --- ISI KERTAS --- */
+.letter-content {
+    font-family: 'Press Start 2P', cursive;
+    color: #000000;
+    font-size: 8px;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 10px;
+    padding-bottom: 10px; 
+}
+
+.letter-content h3 {
+    font-size: 10px;
+    color: #ff4370;
+    margin-bottom: 2px;
+    text-align: center;
+}
+
+.album-subtitle {
+    font-size: 6px;
+    text-align: center;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+/* --- GRID FOTO --- */
+.photo-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    width: 100%;
+}
+
+.photo-card {
+    background: #ffffff;
+    border: 2px solid #000000;
+    padding: 3px;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-card.span-2 {
+    grid-column: span 2;
+}
+
+.photo-card.span-2 img {
+    height: 85px; 
+}
+
+.photo-card img {
+    width: 100%;
+    height: 65px; 
+    object-fit: cover;
+    border: 1px solid #000000;
+}
+
+.photo-card span {
+    font-size: 5px;
+    margin-top: 3px;
+    color: #000000;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* --- NAVIGASI TOMBOL --- */
+.paper-nav-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 220px;
+    position: relative;
+    z-index: 100;
+    transition: opacity 0.3s ease;
+}
+
+.paper-nav-controls.hidden {
+    display: none !important;
+}
+
+.page-indicator {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    color: #000000;
+    text-shadow: 1px 1px 0px #ffffff;
+}
+
+.nav-arrow {
+    width: 36px;
+    height: 36px;
+    background-color: #ffffff;
+    border: 3px solid #000000;
+    box-shadow: 3px 3px 0px #000000;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
+    font-weight: bold;
+    color: #ff4370;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.1s, background-color 0.2s, opacity 0.2s;
+    user-select: none;
+}
+
+.nav-arrow:hover:not(:disabled) {
+    background-color: #ff4370;
+    color: #ffffff;
+}
+
+.nav-arrow:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px #000000;
+}
+
+.nav-arrow:disabled,
+.nav-arrow.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background-color: #ccc;
+}
+
+/* ANIMASI PULL & THROW KERTAS SURAT */
+.paper-page.anim-throw-back {
+    animation: smoothThrowToBack 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+
+.paper-page.anim-pull-front {
+    animation: smoothPullToFront 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+}
+
+@keyframes smoothThrowToBack {
+    0% { transform: rotate(0deg) translate(0, 0); z-index: 40; opacity: 1; }
+    50% { transform: rotate(15deg) translate(140px, -20px); z-index: 40; opacity: 1; }
+    51% { z-index: 5; }
+    100% { transform: rotate(-2deg) translate(-3px, 5px); z-index: 5; opacity: 0.85; }
+}
+
+@keyframes smoothPullToFront {
+    0% { transform: rotate(-2deg) translate(-3px, 5px); opacity: 1; }
+    45% { transform: rotate(-15deg) translate(-140px, -15px); opacity: 1; }
+    100% { transform: rotate(0deg) translate(0, 0); opacity: 1; z-index: 40; }
+}
+
+/* Background Hearts & Pointer */
+#heart-container {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    overflow: hidden; z-index: 1; pointer-events: none;
+}
+
+.heart-static-img {
+    position: absolute; user-select: none; pointer-events: none;
+    image-rendering: pixelated; mix-blend-mode: overlay;
+}
+
+.pointer-arrow {
+    position: absolute; right: 5px; bottom: -10px;
+    width: 75px; height: 75px; z-index: 10; pointer-events: none;
+    transition: opacity 0.3s ease;
+    animation: arrowBounce 1.5s infinite ease-in-out;
+}
+
+@keyframes arrowBounce {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-4px, -5px); }
+}
+
+/* Fade Transitions */
+.fade-out { animation: fadeOut 0.4s ease forwards; }
+.fade-in { animation: fadeIn 0.4s ease forwards; }
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.85); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* --- ADAPTIF UNTUK PERANGKAT HP (1980x1080 DAN SEJENISNYA) --- */
+@media screen and (max-width: 600px) {
+    .app-container {
+        transform: scale(0.88);
+        transform-origin: center center;
     }
 
-    createStaticPixelHearts();
-
-    // --- 2. LOGIKA TRANSISI SCENE ---
-    const btnToScene2 = document.getElementById('btn-to-scene2');
-    const btnOpenEnvelope = document.getElementById('btn-open-envelope');
-    const scene1 = document.getElementById('scene-1');
-    const scene2 = document.getElementById('scene-2');
-    const envelope = document.getElementById('envelope');
-    const envelopeTextHint = document.getElementById('envelope-text-hint');
-    const pointerArrow = document.getElementById('pointer-arrow');
-    const paperNavControls = document.getElementById('paper-nav-controls');
-    const pageIndicator = document.getElementById('page-indicator');
-
-    if (btnToScene2) {
-        btnToScene2.addEventListener('click', () => {
-            scene1.classList.add('fade-out');
-
-            setTimeout(() => {
-                scene1.classList.remove('active', 'fade-out');
-                scene1.classList.add('hidden');
-
-                scene2.classList.remove('hidden');
-                scene2.classList.add('active', 'fade-in');
-            }, 400);
-        });
+    .audio-note-top {
+        top: 15px;
+        left: 15px;
+        font-size: 8px;
     }
+}
 
-    if (btnOpenEnvelope) {
-        btnOpenEnvelope.addEventListener('click', () => {
-            envelope.classList.add('open');
-            btnOpenEnvelope.style.display = 'none';
-            
-            if (envelopeTextHint) envelopeTextHint.style.opacity = '0';
-            if (pointerArrow) pointerArrow.style.opacity = '0';
-
-            setTimeout(() => {
-                envelope.classList.add('paper-out');
-                if (paperNavControls) paperNavControls.classList.remove('hidden');
-            }, 600);
-        });
+@media screen and (max-height: 680px) {
+    .app-container {
+        transform: scale(0.8);
+        transform-origin: center center;
     }
-
-    // --- 3. NAVIGASI TUMPUKAN KERTAS (STACK PAPER) ---
-    const papers = Array.from(document.querySelectorAll('.paper-page'));
-    const btnNextPaper = document.getElementById('btn-next-paper');
-    const btnPrevPaper = document.getElementById('btn-prev-paper');
-
-    let currentPageIndex = 0;
-    const totalPages = papers.length;
-    let isAnimating = false;
-
-    function updateNavUI() {
-        if (pageIndicator) {
-            pageIndicator.innerText = `${currentPageIndex + 1} / ${totalPages}`;
-        }
-
-        if (currentPageIndex === 0) {
-            btnPrevPaper.classList.add('disabled');
-            btnPrevPaper.disabled = true;
-        } else {
-            btnPrevPaper.classList.remove('disabled');
-            btnPrevPaper.disabled = false;
-        }
-
-        if (currentPageIndex === totalPages - 1) {
-            btnNextPaper.classList.add('disabled');
-            btnNextPaper.disabled = true;
-        } else {
-            btnNextPaper.classList.remove('disabled');
-            btnNextPaper.disabled = false;
-        }
-    }
-
-    function reorderPapers() {
-        papers.forEach((paper, index) => {
-            paper.classList.remove('paper-active', 'paper-behind-1', 'paper-behind-2');
-
-            if (index === currentPageIndex) {
-                paper.classList.add('paper-active');
-            } else if (index === currentPageIndex + 1) {
-                paper.classList.add('paper-behind-1');
-            } else {
-                paper.classList.add('paper-behind-2');
-            }
-        });
-    }
-
-    // Tombol Next (Melempar Kertas Ke Belakang)
-    if (btnNextPaper) {
-        btnNextPaper.addEventListener('click', () => {
-            if (isAnimating || currentPageIndex >= totalPages - 1) return;
-            
-            isAnimating = true;
-            const currentPaper = papers[currentPageIndex];
-            
-            currentPaper.classList.add('anim-throw-back');
-
-            setTimeout(() => {
-                currentPageIndex++;
-                reorderPapers();
-                currentPaper.classList.remove('anim-throw-back');
-                updateNavUI();
-                isAnimating = false;
-            }, 500);
-        });
-    }
-
-    // Tombol Prev (Attract Kertas Ke Depan)
-    if (btnPrevPaper) {
-        btnPrevPaper.addEventListener('click', () => {
-            if (isAnimating || currentPageIndex <= 0) return;
-
-            isAnimating = true;
-            const targetPaper = papers[currentPageIndex - 1];
-
-            targetPaper.classList.add('anim-pull-front');
-
-            setTimeout(() => {
-                currentPageIndex--;
-                reorderPapers();
-                targetPaper.classList.remove('anim-pull-front');
-                updateNavUI();
-                isAnimating = false;
-            }, 480);
-        });
-    }
-
-    // Inisialisasi awal
-    reorderPapers();
-    updateNavUI();
-});
+}
