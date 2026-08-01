@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- 1. BACKGROUND HATI PIXEL ---
     const heartContainer = document.getElementById('heart-container');
-    const TOTAL_HEARTS = 30;
+    const TOTAL_HEARTS = 25;
 
     function createStaticPixelHearts() {
         if (!heartContainer) return;
@@ -16,11 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
             heartImg.style.left = Math.random() * 92 + 'vw';
             heartImg.style.top = Math.random() * 92 + 'vh';
             
-            const size = Math.random() * 25 + 20; 
+            const size = Math.random() * 20 + 20; 
             heartImg.style.width = size + 'px';
             heartImg.style.height = 'auto';
-            
-            heartImg.style.opacity = (Math.random() * 0.13 + 0.12).toFixed(2);
+            heartImg.style.opacity = (Math.random() * 0.15 + 0.1).toFixed(2);
             
             const rotation = Math.floor(Math.random() * 40) - 20;
             heartImg.style.transform = `rotate(${rotation}deg)`;
@@ -31,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     createStaticPixelHearts();
 
-    // --- 2. LOGIKA SEQUENCING SCENE ---
+    // --- 2. LOGIKA TRANSISI SCENE ---
     const btnToScene2 = document.getElementById('btn-to-scene2');
     const btnOpenEnvelope = document.getElementById('btn-open-envelope');
     const scene1 = document.getElementById('scene-1');
@@ -42,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const paperNavControls = document.getElementById('paper-nav-controls');
     const pageIndicator = document.getElementById('page-indicator');
 
-    // Klik NEXT dari Scene 1 -> Scene 2
     if (btnToScene2) {
         btnToScene2.addEventListener('click', () => {
             scene1.classList.add('fade-out');
@@ -57,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Klik Segel Merah (Buka Amplop)
     if (btnOpenEnvelope) {
         btnOpenEnvelope.addEventListener('click', () => {
             envelope.classList.add('open');
@@ -73,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3. LOGIKA STACK PAPER NAVIGATION ---
+    // --- 3. NAVIGASI TUMPUKAN KERTAS (STACK PAPER) ---
     const papers = Array.from(document.querySelectorAll('.paper-page'));
     const btnNextPaper = document.getElementById('btn-next-paper');
     const btnPrevPaper = document.getElementById('btn-prev-paper');
@@ -82,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalPages = papers.length;
     let isAnimating = false;
 
-    function updateArrowVisibility() {
+    function updateNavUI() {
         if (pageIndicator) {
             pageIndicator.innerText = `${currentPageIndex + 1} / ${totalPages}`;
         }
@@ -106,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function reorderPapers() {
         papers.forEach((paper, index) => {
-            // Bersihkan kelas posisi lama
             paper.classList.remove('paper-active', 'paper-behind-1', 'paper-behind-2');
 
             if (index === currentPageIndex) {
@@ -119,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Tombol Next (Ke Halaman Selanjutnya)
+    // Tombol Next (Melempar Kertas Ke Belakang)
     if (btnNextPaper) {
         btnNextPaper.addEventListener('click', () => {
             if (isAnimating || currentPageIndex >= totalPages - 1) return;
@@ -132,15 +128,14 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 currentPageIndex++;
                 reorderPapers();
-                // Hapus kelas animasi setelah reorder selesai
                 currentPaper.classList.remove('anim-throw-back');
-                updateArrowVisibility();
+                updateNavUI();
                 isAnimating = false;
-            }, 500); // Sinkron tepat 500ms dengan durasi CSS Keyframes
+            }, 500);
         });
     }
 
-    // Tombol Prev (Ke Halaman Sebelumnya) - FIXED FLICKER
+    // Tombol Prev (Attract Kertas Ke Depan)
     if (btnPrevPaper) {
         btnPrevPaper.addEventListener('click', () => {
             if (isAnimating || currentPageIndex <= 0) return;
@@ -148,24 +143,13 @@ document.addEventListener('DOMContentLoaded', () => {
             isAnimating = true;
             const targetPaper = papers[currentPageIndex - 1];
 
-            // 1. ANGKAT Z-INDEX SECARA LANGSUNG SEBELUM ANIMASI MULAI
-            // Ini mencegah efek kertas 'loncat/flicker' dari tumpukan bawah
-            targetPaper.style.zIndex = '50';
-            targetPaper.style.opacity = '1';
-
-            // 2. Tambahkan kelas animasi
             targetPaper.classList.add('anim-pull-front');
 
             setTimeout(() => {
                 currentPageIndex--;
-                
-                // 3. Reset inline style agar z-index kembali diatur penuh oleh reorderPapers()
-                targetPaper.style.zIndex = '';
-                targetPaper.style.opacity = '';
-                
                 reorderPapers();
                 targetPaper.classList.remove('anim-pull-front');
-                updateArrowVisibility();
+                updateNavUI();
                 isAnimating = false;
             }, 480);
         });
@@ -173,5 +157,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Inisialisasi awal
     reorderPapers();
-    updateArrowVisibility();
+    updateNavUI();
 });
