@@ -305,4 +305,58 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Di-ACC!");
         });
     }
+
+    // --- 5. LOGIKA MODAL PREVIEW GAMBAR ---
+    const imageModal = document.getElementById('image-modal');
+    const modalImg = document.getElementById('modal-img');
+    const modalCaption = document.getElementById('modal-caption');
+    const btnCloseModal = document.getElementById('btn-close-modal');
+    const photoCards = document.querySelectorAll('.photo-card');
+
+    // Buka Modal saat .photo-card diklik
+    photoCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const img = card.querySelector('img');
+            const span = card.querySelector('span');
+
+            if (img && imageModal && modalImg) {
+                modalImg.src = img.src;
+                modalImg.alt = img.alt || 'Preview Gambar';
+                
+                if (modalCaption) {
+                    modalCaption.innerText = span ? span.innerText : '';
+                }
+
+                imageModal.classList.remove('hidden');
+                // Timeout kecil agar efek CSS transition opacity berjalan
+                setTimeout(() => {
+                    imageModal.classList.add('active');
+                }, 10);
+            }
+        });
+    });
+
+    // Fungsi Tutup Modal
+    function closeModal() {
+        if (!imageModal) return;
+        imageModal.classList.remove('active');
+        setTimeout(() => {
+            imageModal.classList.add('hidden');
+            if (modalImg) modalImg.src = '';
+        }, 300); // Sesuaikan dengan durasi transition CSS (0.3s)
+    }
+
+    // Klik tombol "X" untuk tutup
+    if (btnCloseModal) {
+        btnCloseModal.addEventListener('click', closeModal);
+    }
+
+    // Klik area latar belakang hitam (di luar box) untuk tutup
+    if (imageModal) {
+        imageModal.addEventListener('click', (e) => {
+            if (e.target === imageModal) {
+                closeModal();
+            }
+        });
+    }
 });
