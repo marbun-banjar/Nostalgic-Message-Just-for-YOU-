@@ -940,3 +940,111 @@ h1 {
         border-width: 1.5px;
     }
 }
+/* ================= MODAL PREVIEW GAMBAR (LIGHTBOX) ================= */
+.image-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    z-index: 9999; /* Memastikan modal selalu di paling depan */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.image-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.image-modal .modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 25px 15px 15px 15px;
+    background-color: #ffffff;
+    border: 5px solid #000000;
+    box-shadow: 8px 8px 0px #000000;
+}
+
+/* Tombol X (Close) Retro */
+.btn-close-modal {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    width: 36px;
+    height: 36px;
+    background-color: #ff4370;
+    color: #ffffff;
+    border: 3px solid #000000;
+    box-shadow: 3px 3px 0px #000000;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1;
+    z-index: 10000;
+    transition: transform 0.1s, background-color 0.2s;
+}
+
+.btn-close-modal:hover {
+    background-color: #ffffff;
+    color: #ff4370;
+    transform: scale(1.1);
+}
+
+.btn-close-modal:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px #000000;
+}
+
+/* Container Gambar Modal */
+.modal-image-wrapper {
+    width: 100%;
+    max-height: 65vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border: 3px solid #000000;
+    background-color: #000000;
+}
+
+.modal-image-wrapper img {
+    max-width: 100%;
+    max-height: 65vh;
+    object-fit: contain;
+}
+
+/* Caption Gambar Modal */
+.modal-caption {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    color: #000000;
+    margin-top: 12px;
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* Cursor pointer untuk semua foto di galeri */
+.photo-card {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.photo-card:hover {
+    transform: scale(1.03);
+}
