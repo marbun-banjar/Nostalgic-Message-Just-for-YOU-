@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     // --- 1. BACKGROUND HATI PIXEL ---
     const heartContainer = document.getElementById('heart-container');
     const TOTAL_HEARTS = 25;
@@ -12,18 +12,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const heartImg = document.createElement('img');
             heartImg.src = 'pixel-heart.png';
             heartImg.classList.add('heart-static-img');
-            
+
             heartImg.style.left = Math.random() * 92 + 'vw';
             heartImg.style.top = Math.random() * 92 + 'vh';
-            
-            const size = Math.random() * 20 + 20; 
+
+            const size = Math.random() * 20 + 20;
             heartImg.style.width = size + 'px';
             heartImg.style.height = 'auto';
             heartImg.style.opacity = (Math.random() * 0.15 + 0.1).toFixed(2);
-            
+
             const rotation = Math.floor(Math.random() * 40) - 20;
             heartImg.style.transform = `rotate(${rotation}deg)`;
-            
+
             heartContainer.appendChild(heartImg);
         }
     }
@@ -35,55 +35,92 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnOpenEnvelope = document.getElementById('btn-open-envelope');
     const scene1 = document.getElementById('scene-1');
     const scene2 = document.getElementById('scene-2');
+    const scene3 = document.getElementById('scene-3');
+    const pixelBox = scene1 ? scene1.querySelector('.pixel-box') : null;
+    const scene2Content = document.getElementById('scene-2-content');
     const envelope = document.getElementById('envelope');
+    const envelopeWrapper = document.querySelector('.envelope-wrapper');
     const envelopeTextHint = document.getElementById('envelope-text-hint');
     const pointerArrow = document.getElementById('pointer-arrow');
     const paperNavControls = document.getElementById('paper-nav-controls');
     const pageIndicator = document.getElementById('page-indicator');
+    const btnFinishLetter = document.getElementById('btn-finish-letter');
 
-    if (btnToScene2) {
+    // Status apakah amplop sudah dibuka
+    let isEnvelopeOpened = false;
+
+    // --- TRANSISI SCENE 1 KE SCENE 2 (Hanya 1 Listener Bersih) ---
+    if (btnToScene2 && pixelBox) {
         btnToScene2.addEventListener('click', () => {
-            scene1.classList.add('fade-out');
+            // 1. Scene 1 mengecil & menghilang (pop-out)
+            pixelBox.classList.remove('pop-in');
+            pixelBox.classList.add('pop-out');
 
             setTimeout(() => {
-                scene1.classList.remove('active', 'fade-out');
+                // 2. Sembunyikan Scene 1
+                scene1.classList.remove('active');
                 scene1.classList.add('hidden');
 
+                // 3. Tampilkan Scene 2
                 scene2.classList.remove('hidden');
-                scene2.classList.add('active', 'fade-in');
-            }, 400);
+                scene2.classList.add('active');
+
+                // 4. Munculkan elemen Scene 2 dengan efek pop-in elastis
+                if (scene2Content) {
+                    scene2Content.classList.remove('pop-out');
+                    scene2Content.classList.add('pop-in');
+                }
+            }, 400); // Waktu selaras dengan durasi animasi pop-out (0.4s)
         });
     }
 
+    // KLIK SEGEL / AMPLOP UNTUK MEMBUKA
     if (btnOpenEnvelope) {
         btnOpenEnvelope.addEventListener('click', () => {
             envelope.classList.add('open');
             btnOpenEnvelope.style.display = 'none';
-            
+
             if (envelopeTextHint) envelopeTextHint.style.opacity = '0';
             if (pointerArrow) pointerArrow.style.opacity = '0';
 
             setTimeout(() => {
                 envelope.classList.add('paper-out');
-                if (paperNavControls) paperNavControls.classList.remove('hidden');
+
+                // Set flag amplop sudah dibuka dan tampilkan kontrol
+                isEnvelopeOpened = true;
+                updateNavUI();
             }, 600);
         });
     }
 
-    // --- 3. NAVIGASI TUMPUKAN KERTAS (STACK PAPER) ---
+    // --- 3. NAVIGASI TUMPUKAN KERTAS ---
     const papers = Array.from(document.querySelectorAll('.paper-page'));
     const btnNextPaper = document.getElementById('btn-next-paper');
     const btnPrevPaper = document.getElementById('btn-prev-paper');
 
     let currentPageIndex = 0;
-    const totalPages = papers.length;
+    const totalPages = papers.length; // 6 Lembar
     let isAnimating = false;
 
     function updateNavUI() {
+        // PERATURAN 1: Kalau amplop BELUM dibuka, SEMUA tombol dikunci rapat
+        if (!isEnvelopeOpened) {
+            if (paperNavControls) paperNavControls.classList.add('hidden');
+            if (btnFinishLetter) {
+                btnFinishLetter.classList.remove('show');
+            }
+            return;
+        }
+
+        // Tampilkan kontainer navigasi (< 1/6 >)
+        if (paperNavControls) paperNavControls.classList.remove('hidden');
+
+        // Update teks indikator halaman
         if (pageIndicator) {
             pageIndicator.innerText = `${currentPageIndex + 1} / ${totalPages}`;
         }
 
+        // --- KONTROL TOMBOL PANAH (< dan >) ---
         if (currentPageIndex === 0) {
             btnPrevPaper.classList.add('disabled');
             btnPrevPaper.disabled = true;
@@ -98,6 +135,13 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             btnNextPaper.classList.remove('disabled');
             btnNextPaper.disabled = false;
+        }
+
+        // --- KONTROL TOMBOL "NEXT" AKHIR SCENE (Halaman 6/6) ---
+        if (currentPageIndex === totalPages - 1) {
+            btnFinishLetter.classList.add('show'); // Muncul melayang secara absolute & fade in
+        } else {
+            btnFinishLetter.classList.remove('show'); // Hilang mulus fade out
         }
     }
 
@@ -115,14 +159,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Tombol Next (Melempar Kertas Ke Belakang)
+    // Tombol Next Kertas (>)
     if (btnNextPaper) {
         btnNextPaper.addEventListener('click', () => {
             if (isAnimating || currentPageIndex >= totalPages - 1) return;
-            
+
             isAnimating = true;
             const currentPaper = papers[currentPageIndex];
-            
+
             currentPaper.classList.add('anim-throw-back');
 
             setTimeout(() => {
@@ -135,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Tombol Prev (Attract Kertas Ke Depan)
+    // Tombol Prev Kertas (<)
     if (btnPrevPaper) {
         btnPrevPaper.addEventListener('click', () => {
             if (isAnimating || currentPageIndex <= 0) return;
@@ -155,7 +199,110 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // TOMBOL NEXT AKHIR (SELESAI BACA SURAT DI LEMBAR 6/6)
+    if (btnFinishLetter) {
+        btnFinishLetter.addEventListener('click', () => {
+            envelopeWrapper.classList.add('slide-out-left');
+
+            setTimeout(() => {
+                scene2.classList.remove('active');
+                scene2.classList.add('hidden');
+
+                scene3.classList.remove('hidden');
+                scene3.classList.add('active', 'fade-in');
+            }, 800);
+        });
+    }
+
     // Inisialisasi awal
     reorderPapers();
     updateNavUI();
+
+    // --- 4. SCENE 3: LOGIKA TOMBOL NO & YES ---
+    let noClickCount = 0;
+    const btnNo = document.getElementById('btn-no');
+    const btnYes = document.getElementById('btn-yes');
+    const bgMessagesContainer = document.getElementById('bg-messages-container');
+    const questionBox = document.querySelector('.question-box');
+
+    const whisperMessages = [
+        "aku akan berubah...",
+        "belajar memahami mu...",
+        "bertumbuh bersama mu! 💖",
+        "aku tidak akan menyerah!",
+        "aku yakin kita bisa! ✨"
+    ];
+
+    if (btnNo) {
+        btnNo.addEventListener('click', () => {
+            if (noClickCount < 5) {
+                noClickCount++;
+                btnNo.classList.add('moving');
+
+                const padding = 60;
+                const randomX = Math.random() * (window.innerWidth - btnNo.offsetWidth - padding) + padding / 2;
+                const randomY = Math.random() * (window.innerHeight - btnNo.offsetHeight - padding) + padding / 2;
+
+                btnNo.style.left = `${randomX}px`;
+                btnNo.style.top = `${randomY}px`;
+
+                spawnWhisperMessageOutsideBox(noClickCount - 1);
+
+                if (noClickCount === 5) {
+                    btnNo.style.backgroundColor = '#e0e0e0';
+                    btnNo.style.borderColor = '#888888';
+                    btnNo.style.color = '#888888';
+                }
+            } else {
+                alert("Kamu yakin? 🥺 Tapi aku tetap mau berjuang buat kamu!");
+            }
+        });
+    }
+
+    // Simpan slot posisi yang sudah dipakai
+    let usedSlots = [];
+
+    function spawnWhisperMessageOutsideBox(index) {
+        if (!bgMessagesContainer || !questionBox) return;
+
+        const msgText = whisperMessages[index];
+        const span = document.createElement('span');
+        span.className = 'bg-whisper-text pop-in';
+        span.textContent = msgText;
+
+        const screenW = window.innerWidth;
+        const screenH = window.innerHeight;
+        const boxRect = questionBox.getBoundingClientRect();
+
+        const slots = [
+            { x: Math.max(10, boxRect.left - 170), y: Math.max(20, boxRect.top - 70) },
+            { x: Math.min(screenW - 170, boxRect.right - 20), y: Math.max(20, boxRect.top - 110) },
+            { x: Math.max(10, boxRect.left - 150), y: Math.min(screenH - 100, boxRect.bottom + 20) },
+            { x: Math.min(screenW - 170, boxRect.right - 40), y: Math.min(screenH - 80, boxRect.bottom + 60) },
+            { x: (screenW / 2) - 80, y: Math.max(15, boxRect.top - 130) }
+        ];
+
+        let availableSlots = slots.map((_, i) => i).filter(i => !usedSlots.includes(i));
+
+        if (availableSlots.length === 0) {
+            usedSlots = [];
+            availableSlots = slots.map((_, i) => i);
+        }
+
+        const randomSlotIndex = availableSlots[Math.floor(Math.random() * availableSlots.length)];
+        usedSlots.push(randomSlotIndex);
+
+        const chosenPos = slots[randomSlotIndex];
+
+        span.style.left = `${chosenPos.x}px`;
+        span.style.top = `${chosenPos.y}px`;
+
+        bgMessagesContainer.appendChild(span);
+    }
+
+    if (btnYes) {
+        btnYes.addEventListener('click', () => {
+            console.log("Di-ACC!");
+        });
+    }
 });
