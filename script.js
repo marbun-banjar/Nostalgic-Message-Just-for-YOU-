@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (let i = 0; i < TOTAL_HEARTS; i++) {
             const heartImg = document.createElement('img');
-            heartImg.src = 'pixel-heart.png';
+            // Gambar pixel heart via Data URL SVG agar pasti muncul tanpa file eksternal
+            heartImg.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff4370"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
             heartImg.classList.add('heart-static-img');
 
             heartImg.style.left = Math.random() * 92 + 'vw';
@@ -30,51 +31,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
     createStaticPixelHearts();
 
-    // --- 2. LOGIKA TRANSISI SCENE ---
+    // --- 2. TRANSISI SCENE 1 KE SCENE 2 ---
     const btnToScene2 = document.getElementById('btn-to-scene2');
-    const btnOpenEnvelope = document.getElementById('btn-open-envelope');
     const scene1 = document.getElementById('scene-1');
     const scene2 = document.getElementById('scene-2');
-    const scene3 = document.getElementById('scene-3');
     const pixelBox = scene1 ? scene1.querySelector('.pixel-box') : null;
     const scene2Content = document.getElementById('scene-2-content');
-    const envelope = document.getElementById('envelope');
-    const envelopeWrapper = document.querySelector('.envelope-wrapper');
-    const envelopeTextHint = document.getElementById('envelope-text-hint');
-    const pointerArrow = document.getElementById('pointer-arrow');
-    const paperNavControls = document.getElementById('paper-nav-controls');
-    const pageIndicator = document.getElementById('page-indicator');
-    const btnFinishLetter = document.getElementById('btn-finish-letter');
 
-    // Status apakah amplop sudah dibuka
-    let isEnvelopeOpened = false;
-
-    // --- TRANSISI SCENE 1 KE SCENE 2 (Hanya 1 Listener Bersih) ---
     if (btnToScene2 && pixelBox) {
         btnToScene2.addEventListener('click', () => {
-            // 1. Scene 1 mengecil & menghilang (pop-out)
             pixelBox.classList.remove('pop-in');
             pixelBox.classList.add('pop-out');
 
             setTimeout(() => {
-                // 2. Sembunyikan Scene 1
                 scene1.classList.remove('active');
                 scene1.classList.add('hidden');
 
-                // 3. Tampilkan Scene 2
                 scene2.classList.remove('hidden');
                 scene2.classList.add('active');
 
-                // 4. Munculkan elemen Scene 2 dengan efek pop-in elastis
                 if (scene2Content) {
                     scene2Content.classList.remove('pop-out');
                     scene2Content.classList.add('pop-in');
                 }
-            }, 400); // Waktu selaras dengan durasi animasi pop-out (0.4s)
+            }, 400);
         });
     }
 
-    // KLIK SEGEL / AMPLOP UNTUK MEMBUKA
+    // --- 3. AMPLOP & KERTAS ---
+    const btnOpenEnvelope = document.getElementById('btn-open-envelope');
+    const envelope = document.getElementById('envelope');
+    const envelopeWrapper = document.querySelector('.envelope-wrapper');
+    const envelopeTextHint = document.getElementById('envelope-text-hint');
+    const pointerArrow = document.getElementById('pointer-arrow');
+
+    const papers = Array.from(document.querySelectorAll('.paper-page'));
+    const paperNavControls = document.getElementById('paper-nav-controls');
+    const pageIndicator = document.getElementById('page-indicator');
+    const btnNextPaper = document.getElementById('btn-next-paper');
+    const btnPrevPaper = document.getElementById('btn-prev-paper');
+    const btnFinishLetter = document.getElementById('btn-finish-letter');
+
+    let isEnvelopeOpened = false;
+    let currentPageIndex = 0;
+    const totalPages = papers.length;
+    let isAnimating = false;
+
     if (btnOpenEnvelope) {
         btnOpenEnvelope.addEventListener('click', () => {
             envelope.classList.add('open');
@@ -85,42 +87,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
             setTimeout(() => {
                 envelope.classList.add('paper-out');
-
-                // Set flag amplop sudah dibuka dan tampilkan kontrol
                 isEnvelopeOpened = true;
                 updateNavUI();
             }, 600);
         });
     }
 
-    // --- 3. NAVIGASI TUMPUKAN KERTAS ---
-    const papers = Array.from(document.querySelectorAll('.paper-page'));
-    const btnNextPaper = document.getElementById('btn-next-paper');
-    const btnPrevPaper = document.getElementById('btn-prev-paper');
-
-    let currentPageIndex = 0;
-    const totalPages = papers.length; // 6 Lembar
-    let isAnimating = false;
-
     function updateNavUI() {
-        // PERATURAN 1: Kalau amplop BELUM dibuka, SEMUA tombol dikunci rapat
         if (!isEnvelopeOpened) {
             if (paperNavControls) paperNavControls.classList.add('hidden');
-            if (btnFinishLetter) {
-                btnFinishLetter.classList.remove('show');
-            }
+            if (btnFinishLetter) btnFinishLetter.classList.remove('show');
             return;
         }
 
-        // Tampilkan kontainer navigasi (< 1/6 >)
         if (paperNavControls) paperNavControls.classList.remove('hidden');
 
-        // Update teks indikator halaman
         if (pageIndicator) {
             pageIndicator.innerText = `${currentPageIndex + 1} / ${totalPages}`;
         }
 
-        // --- KONTROL TOMBOL PANAH (< dan >) ---
         if (currentPageIndex === 0) {
             btnPrevPaper.classList.add('disabled');
             btnPrevPaper.disabled = true;
@@ -137,11 +122,10 @@ document.addEventListener('DOMContentLoaded', () => {
             btnNextPaper.disabled = false;
         }
 
-        // --- KONTROL TOMBOL "NEXT" AKHIR SCENE (Halaman 6/6) ---
         if (currentPageIndex === totalPages - 1) {
-            btnFinishLetter.classList.add('show'); // Muncul melayang secara absolute & fade in
+            btnFinishLetter.classList.add('show');
         } else {
-            btnFinishLetter.classList.remove('show'); // Hilang mulus fade out
+            btnFinishLetter.classList.remove('show');
         }
     }
 
@@ -159,14 +143,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Tombol Next Kertas (>)
     if (btnNextPaper) {
         btnNextPaper.addEventListener('click', () => {
             if (isAnimating || currentPageIndex >= totalPages - 1) return;
 
             isAnimating = true;
             const currentPaper = papers[currentPageIndex];
-
             currentPaper.classList.add('anim-throw-back');
 
             setTimeout(() => {
@@ -179,14 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Tombol Prev Kertas (<)
     if (btnPrevPaper) {
         btnPrevPaper.addEventListener('click', () => {
             if (isAnimating || currentPageIndex <= 0) return;
 
             isAnimating = true;
             const targetPaper = papers[currentPageIndex - 1];
-
             targetPaper.classList.add('anim-pull-front');
 
             setTimeout(() => {
@@ -199,10 +179,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // TOMBOL NEXT AKHIR (SELESAI BACA SURAT DI LEMBAR 6/6)
+    const scene3 = document.getElementById('scene-3');
     if (btnFinishLetter) {
         btnFinishLetter.addEventListener('click', () => {
-            envelopeWrapper.classList.add('slide-out-left');
+            if (envelopeWrapper) envelopeWrapper.classList.add('slide-out-left');
 
             setTimeout(() => {
                 scene2.classList.remove('active');
@@ -214,7 +194,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Inisialisasi awal
     reorderPapers();
     updateNavUI();
 
@@ -228,10 +207,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const whisperMessages = [
         "aku akan berubah...",
         "belajar memahami mu...",
-        "bertumbuh bersama mu! 💖",
+        "bertumbuh bersama mu! 💖...",
         "aku tidak akan menyerah!",
         "aku yakin kita bisa! ✨"
     ];
+
+    const placedMessageRects = [];
 
     if (btnNo) {
         btnNo.addEventListener('click', () => {
@@ -239,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 noClickCount++;
                 btnNo.classList.add('moving');
 
-                const padding = 60;
+                const padding = 50;
                 const randomX = Math.random() * (window.innerWidth - btnNo.offsetWidth - padding) + padding / 2;
                 const randomY = Math.random() * (window.innerHeight - btnNo.offsetHeight - padding) + padding / 2;
 
@@ -259,50 +240,93 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Simpan slot posisi yang sudah dipakai
-    let usedSlots = [];
-
     function spawnWhisperMessageOutsideBox(index) {
-        if (!bgMessagesContainer || !questionBox) return;
+        if (!bgMessagesContainer || !questionBox || index >= whisperMessages.length) return;
 
         const msgText = whisperMessages[index];
+
+        // Murni buat span baru
         const span = document.createElement('span');
+
+        // PENTING: Hanya berikan class bg-whisper-text!
         span.className = 'bg-whisper-text pop-in';
         span.textContent = msgText;
 
+        bgMessagesContainer.appendChild(span);
+
+        // Hitung posisi setelah di-render
         const screenW = window.innerWidth;
         const screenH = window.innerHeight;
         const boxRect = questionBox.getBoundingClientRect();
 
-        const slots = [
-            { x: Math.max(10, boxRect.left - 170), y: Math.max(20, boxRect.top - 70) },
-            { x: Math.min(screenW - 170, boxRect.right - 20), y: Math.max(20, boxRect.top - 110) },
-            { x: Math.max(10, boxRect.left - 150), y: Math.min(screenH - 100, boxRect.bottom + 20) },
-            { x: Math.min(screenW - 170, boxRect.right - 40), y: Math.min(screenH - 80, boxRect.bottom + 60) },
-            { x: (screenW / 2) - 80, y: Math.max(15, boxRect.top - 130) }
-        ];
+        const msgW = span.offsetWidth || 140;
+        const msgH = span.offsetHeight || 30;
+        const margin = 15;
 
-        let availableSlots = slots.map((_, i) => i).filter(i => !usedSlots.includes(i));
+        let bestX = 10;
+        let bestY = 10;
+        let validPosition = false;
+        let attempts = 0;
 
-        if (availableSlots.length === 0) {
-            usedSlots = [];
-            availableSlots = slots.map((_, i) => i);
+        while (!validPosition && attempts < 100) {
+            attempts++;
+            const zone = Math.floor(Math.random() * 4);
+
+            if (zone === 0) { // ATAS
+                bestX = Math.random() * (screenW - msgW - 20) + 10;
+                const maxY = boxRect.top - msgH - margin;
+                bestY = Math.random() * Math.max(10, maxY);
+            } else if (zone === 1) { // BAWAH
+                bestX = Math.random() * (screenW - msgW - 20) + 10;
+                const minY = boxRect.bottom + margin;
+                const maxY = screenH - msgH - 20;
+                bestY = minY + Math.random() * Math.max(10, maxY - minY);
+            } else if (zone === 2) { // KIRI
+                const maxX = boxRect.left - msgW - margin;
+                bestX = Math.random() * Math.max(10, maxX);
+                bestY = Math.random() * (screenH - msgH - 20) + 10;
+            } else { // KANAN
+                const minX = boxRect.right + margin;
+                const maxX = screenW - msgW - 10;
+                bestX = minX + Math.random() * Math.max(10, maxX - minX);
+                bestY = Math.random() * (screenH - msgH - 20) + 10;
+            }
+
+            const overlapsMainBox = !(
+                bestX + msgW < boxRect.left - margin ||
+                bestX > boxRect.right + margin ||
+                bestY + msgH < boxRect.top - margin ||
+                bestY > boxRect.bottom + margin
+            );
+
+            let overlapsOther = false;
+            for (const r of placedMessageRects) {
+                if (!(bestX + msgW < r.left || bestX > r.right || bestY + msgH < r.top || bestY > r.bottom)) {
+                    overlapsOther = true;
+                    break;
+                }
+            }
+
+            if (!overlapsMainBox && !overlapsOther) {
+                validPosition = true;
+            }
         }
 
-        const randomSlotIndex = availableSlots[Math.floor(Math.random() * availableSlots.length)];
-        usedSlots.push(randomSlotIndex);
+        span.style.left = `${Math.max(10, Math.min(bestX, screenW - msgW - 10))}px`;
+        span.style.top = `${Math.max(10, Math.min(bestY, screenH - msgH - 10))}px`;
 
-        const chosenPos = slots[randomSlotIndex];
-
-        span.style.left = `${chosenPos.x}px`;
-        span.style.top = `${chosenPos.y}px`;
-
-        bgMessagesContainer.appendChild(span);
+        placedMessageRects.push({
+            left: bestX - 5,
+            right: bestX + msgW + 5,
+            top: bestY - 5,
+            bottom: bestY + msgH + 5
+        });
     }
+
 
     if (btnYes) {
         btnYes.addEventListener('click', () => {
-            console.log("Di-ACC!");
+            alert("Yeay! I love you! ❤️✨");
         });
     }
 
@@ -313,7 +337,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCloseModal = document.getElementById('btn-close-modal');
     const photoCards = document.querySelectorAll('.photo-card');
 
-    // Buka Modal saat .photo-card diklik
     photoCards.forEach(card => {
         card.addEventListener('click', () => {
             const img = card.querySelector('img');
@@ -322,13 +345,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (img && imageModal && modalImg) {
                 modalImg.src = img.src;
                 modalImg.alt = img.alt || 'Preview Gambar';
-                
+
                 if (modalCaption) {
                     modalCaption.innerText = span ? span.innerText : '';
                 }
 
                 imageModal.classList.remove('hidden');
-                // Timeout kecil agar efek CSS transition opacity berjalan
                 setTimeout(() => {
                     imageModal.classList.add('active');
                 }, 10);
@@ -336,22 +358,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Fungsi Tutup Modal
     function closeModal() {
         if (!imageModal) return;
         imageModal.classList.remove('active');
         setTimeout(() => {
             imageModal.classList.add('hidden');
             if (modalImg) modalImg.src = '';
-        }, 300); // Sesuaikan dengan durasi transition CSS (0.3s)
+        }, 300);
     }
 
-    // Klik tombol "X" untuk tutup
     if (btnCloseModal) {
         btnCloseModal.addEventListener('click', closeModal);
     }
 
-    // Klik area latar belakang hitam (di luar box) untuk tutup
     if (imageModal) {
         imageModal.addEventListener('click', (e) => {
             if (e.target === imageModal) {
